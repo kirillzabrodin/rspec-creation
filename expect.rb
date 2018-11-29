@@ -46,7 +46,6 @@ class RespondTo
   end
 
   def compare(object)
-      met = @method.to_s
       object.tryit(@method.to_s)
   end
 end
@@ -67,7 +66,13 @@ class Receive
   end
 
   def compare(obj)
-    obj.define_singleton_method(@method) { obj }
+    val = @value
+    obj.define_singleton_method(@method) { val }
+  end
+
+  def and_return(value)
+    @value = value
+    self
   end
 end
 
@@ -104,15 +109,23 @@ end
 
 a = Obj.new
 
-p expect(true).to eq false
+# p expect(true).to eq false
+#
+# p expect([1, 2, 3]).to includes 2
+#
+# p expect(a).to respond_to :meth
+#
+# p expect(a).to be_a Obj
+#
+# allow(a).to receive(:meth)
+#
+# p expect(a).to respond_to :meth
+#
+# allow(a).to receive(:coke).and_return("Yay!")
+#
+# p expect(a.coke).to eq "Yay!"
 
-p expect([1, 2, 3]).to includes 2
 
-p expect(Obj.new).to respond_to :meth
+allow(a).to receive(:return_name).and_return("A fake name")
 
-p expect(Obj.new).to be_a Obj
-
-allow(a).to receive(:meth)
-
-p expect(a).to respond_to :meth
-p expect(a).to respond_to :meths
+p expect(a.return_name).to eq "A fake name"
